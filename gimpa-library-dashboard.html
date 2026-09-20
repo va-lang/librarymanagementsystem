@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GIMPA Library Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gimpa-library-dashboard.css">
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11C11.55 4 12 4.45 12 5V20C12 19.45 11.55 19 11 19H4V5.5Z" fill="#fff"/><path d="M20 5.5C20 4.67 19.33 4 18.5 4H13C12.45 4 12 4.45 12 5V20C12 19.45 12.45 19 13 19H20V5.5Z" fill="#8fb2f5"/></svg>
+      </div>
+      <div>
+        <h1>GIMPA Library</h1>
+        <span>Management System</span>
+      </div>
+    </div>
+
+    <nav class="sb-nav">
+      <a class="active" data-nav="dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+        Dashboard
+      </a>
+      <a data-nav="books">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Books
+      </a>
+      <a data-nav="members">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Members
+      </a>
+      <a data-nav="borrow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+        Borrow / Return
+      </a>
+      <a data-nav="transactions">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
+        Transactions
+      </a>
+      <a data-nav="reports">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15v3"/><path d="M12 10v8"/><path d="M17 6v12"/></svg>
+        Reports
+      </a>
+      <a data-nav="settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="sb-foot">
+      GIMPA Library<br>Knowledge for a Better Future
+      <div class="ver">v1.0</div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN COLUMN ================= -->
+  <div>
+    <!-- ---- topbar ---- -->
+    <header class="topbar">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="search" placeholder="Search books, members, or ISBN…" aria-label="Search">
+      </div>
+      <div class="topbar-right">
+        <button class="bell" aria-label="Notifications" id="bell-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="badge">3</span>
+        </button>
+        <div class="user-chip" id="user-chip">
+          <div class="avatar">VD</div>
+          <div class="who">
+            <div class="name">Welcome, Vanessa</div>
+            <div class="role">Librarian</div>
+          </div>
+          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- ---- page content ---- -->
+    <main>
+      <div class="page-head">
+        <div>
+          <h2>Dashboard</h2>
+          <p>Welcome to the Library Management System</p>
+        </div>
+        <div class="page-head-right">
+          <span id="today-date">Saturday, 14 September 2025</span>
+          <span class="row">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span id="live-clock">10:24 AM</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- ---- stat cards ---- -->
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div>
+            <p class="label">Total Books</p>
+            <p class="value">1,245</p>
+          </div>
+        </div>
+        <div class="stat-card green">
+          <div class="icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <p class="label">Registered Members</p>
+            <p class="value">328</p>
+          </div>
+        </div>
+        <div class="stat-card amber">
+          <div class="icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div>
+            <p class="label">Books Borrowed</p>
+            <p class="value">73</p>
+          </div>
+        </div>
+        <div class="stat-card red">
+          <div class="icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div>
+            <p class="label">Overdue Books</p>
+            <p class="value">12</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- recent transactions / overdue ---- -->
+      <div class="panel-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <span class="ttl"><span class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Recent Transactions</span>
+            <a>View All</a>
+          </div>
+          <table class="dash-table">
+            <thead><tr><th>Date</th><th>Member</th><th>Book</th><th>Type</th><th>Due Date</th></tr></thead>
+            <tbody id="tx-body"></tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <span class="ttl"><span class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>Overdue Books</span>
+            <a>View All</a>
+          </div>
+          <table class="dash-table">
+            <thead><tr><th>Member</th><th>Book</th><th>Days Overdue</th></tr></thead>
+            <tbody id="overdue-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---- quick action cards ---- -->
+      <div class="action-grid">
+        <button class="action-card blue" data-action="add-book">
+          <span class="icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+          <span class="txt"><span class="ttl">Add New Book</span><span class="sub">Register a new book in the library</span></span>
+          <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <button class="action-card green" data-action="register-member">
+          <span class="icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg></span>
+          <span class="txt"><span class="ttl">Register Member</span><span class="sub">Add a new library member</span></span>
+          <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <button class="action-card amber" data-action="borrow-book">
+          <span class="icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>
+          <span class="txt"><span class="ttl">Borrow Book</span><span class="sub">Issue a book to a member</span></span>
+          <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <button class="action-card red" data-action="return-book">
+          <span class="icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg></span>
+          <span class="txt"><span class="ttl">Return Book</span><span class="sub">Process a book return</span></span>
+          <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- ---- quick search / announcements ---- -->
+      <div class="bottom-grid">
+        <div class="panel panel-bottom-spacing">
+          <div class="panel-head">
+            <span class="ttl"><span class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>Quick Search</span>
+          </div>
+          <div class="tabs-row">
+            <button class="active" data-qtab="books">Books</button>
+            <button data-qtab="members">Members</button>
+            <button data-qtab="transactions">Transactions</button>
+          </div>
+          <div class="search-row2">
+            <input type="search" id="quick-search-input" placeholder="Enter book title, author, ISBN…">
+            <button id="quick-search-btn">Search</button>
+          </div>
+        </div>
+
+        <div class="panel panel-bottom-spacing">
+          <div class="panel-head">
+            <span class="ttl"><span class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 22 2l-9 19-2-8-8-2z"/></svg></span>Library Announcements</span>
+          </div>
+          <ul class="announce-list">
+            <li><span class="dot"></span>Library will be closed on 21 September 2025 for maintenance.</li>
+            <li><span class="dot"></span>New textbooks for the semester are now available.</li>
+            <li><span class="dot"></span>Please return all borrowed books on or before the due date.</li>
+            <li><span class="dot"></span>Visit the library website for more resources.</li>
+          </ul>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- mock data ---------------- */
+const transactions = [
+  { date:"14 Sep 2025", member:"Ama Serwaa", book:"Data Communications and …", type:"Borrow", due:"28 Sep 2025" },
+  { date:"13 Sep 2025", member:"Kofi Mensah", book:"Python Programming", type:"Return", due:"–" },
+  { date:"13 Sep 2025", member:"Linda Osei", book:"Computer Systems", type:"Borrow", due:"27 Sep 2025" },
+  { date:"12 Sep 2025", member:"Kwame Asare", book:"Operating System Concepts", type:"Borrow", due:"26 Sep 2025" },
+  { date:"12 Sep 2025", member:"Akosua Darko", book:"Software Engineering", type:"Return", due:"–" },
+];
+
+const overdue = [
+  { member:"Daniel Addo", book:"Database Systems", days:10 },
+  { member:"Esi Baffour", book:"Computer Networks", days:7 },
+  { member:"Yaw Boateng", book:"Introduction to AI", days:5 },
+  { member:"Grace Annan", book:"System Analysis & Design", days:4 },
+  { member:"Michael Tetteh", book:"Cloud Computing", days:3 },
+];
+
+function renderTransactions(){
+  const body = document.getElementById("tx-body");
+  body.innerHTML = "";
+  transactions.forEach(t => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${t.date}</td>
+      <td>${t.member}</td>
+      <td>${t.book}</td>
+      <td><span class="badge-pill ${t.type === "Borrow" ? "borrow" : "return"}">${t.type}</span></td>
+      <td>${t.due}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function renderOverdue(){
+  const body = document.getElementById("overdue-body");
+  body.innerHTML = "";
+  overdue.forEach(o => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${o.member}</td>
+      <td>${o.book}</td>
+      <td class="overdue-days">${o.days}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+renderTransactions();
+renderOverdue();
+
+/* ---------------- sidebar nav ---------------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+document.querySelectorAll(".sb-nav a").forEach(link => {
+  link.addEventListener("click", () => {
+    document.querySelectorAll(".sb-nav a").forEach(l => l.classList.remove("active"));
+    link.classList.add("active");
+    if (link.dataset.nav !== "dashboard") {
+      showToast("This is a UI concept — that page isn't built yet.");
+    }
+  });
+});
+
+document.querySelectorAll(".action-card").forEach(btn => {
+  btn.addEventListener("click", () => showToast("This is a UI concept — that action isn't wired up yet."));
+});
+
+document.querySelectorAll(".tabs-row button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tabs-row button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  });
+});
+
+document.getElementById("quick-search-btn").addEventListener("click", () => showToast("This is a UI concept — search isn't wired up yet."));
+document.getElementById("bell-btn").addEventListener("click", () => showToast("3 unread notifications — not wired up in this concept."));
+document.getElementById("user-chip").addEventListener("click", () => showToast("This is a UI concept — the account menu isn't wired up yet."));
+document.querySelectorAll(".panel-head a").forEach(a => a.addEventListener("click", () => showToast("This is a UI concept — that link isn't wired up yet.")));
+
+/* ---------------- live-ish clock ---------------- */
+function updateClock(){
+  const now = new Date();
+  document.getElementById("today-date").textContent = now.toLocaleDateString(undefined, { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+  document.getElementById("live-clock").textContent = now.toLocaleTimeString(undefined, { hour:"numeric", minute:"2-digit" });
+}
+updateClock();
+setInterval(updateClock, 30000);
+</script>
+
+</body>
+</html>
