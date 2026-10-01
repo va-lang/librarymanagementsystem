@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BookHive Library - Admin UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">📖</div><div><h1>BookHive Library</h1><span>Admin / Librarian</span></div></div>
+    <nav>
+      <a class="active" href="#">Dashboard</a><a href="#">Catalogue</a><a href="#">Manga</a><a href="#">Members</a>
+      <a href="#">Borrow / Return</a><a href="#">Rentals</a><a href="#">Transactions</a><a href="#">Reports</a><a href="#">Settings</a>
+    </nav>
+    <div class="sidebar-footer">BookHive Library<br>Borrow, Rent, Read, Repeat</div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="search"><input type="text" placeholder="Search books, members, rentals, or ISBN..."></div>
+      <div class="profile"><div class="avatar">VA</div><div><strong>Vanessa</strong><span>Librarian</span></div></div>
+    </header>
+    <main>
+      <div class="page-head"><div><h2>Dashboard</h2><p>Overview of library activity and rental marketplace.</p></div><span>UI Prototype</span></div>
+      <div class="stat-grid">
+        <div class="stat blue"><span>Total Titles</span><strong>12,450</strong></div>
+        <div class="stat green"><span>Members</span><strong>3,482</strong></div>
+        <div class="stat amber"><span>Active Loans</span><strong>1,024</strong></div>
+        <div class="stat purple"><span>Active Rentals</span><strong>312</strong></div>
+      </div>
+      <div class="grid-2">
+        <section class="panel">
+          <div class="panel-head"><h3>Recent Transactions</h3><a href="#">View All</a></div>
+          <table><thead><tr><th>Member</th><th>Book</th><th>Type</th><th>Due Date</th></tr></thead>
+          <tbody>
+            <tr><td>Ama Serwaa</td><td>Dune</td><td><span class="pill green">Borrow</span></td><td>28 Sep</td></tr>
+            <tr><td>Kofi Mensah</td><td>Ocean Pirates Vol. 1</td><td><span class="pill purple">Rent</span></td><td>30 Sep</td></tr>
+            <tr><td>Linda Osei</td><td>Atomic Habits</td><td><span class="pill blue">Return</span></td><td>-</td></tr>
+          </tbody></table>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h3>Pending Rental Listings</h3><a href="#">Review</a></div>
+          <table><thead><tr><th>Book</th><th>Owner</th><th>Condition</th></tr></thead>
+          <tbody>
+            <tr><td>Project Hail Mary</td><td>Daniel A.</td><td><span class="pill green">Good</span></td></tr>
+            <tr><td>Shadow Blades Vol. 1</td><td>Esi B.</td><td><span class="pill blue">Like New</span></td></tr>
+            <tr><td>The Silent Patient</td><td>Grace A.</td><td><span class="pill green">Good</span></td></tr>
+          </tbody></table>
+        </section>
+      </div>
+      <section class="panel">
+        <div class="panel-head"><h3>Quick Actions</h3></div>
+        <div class="action-grid">
+          <button class="action blue"><strong>Add Book</strong><span>Add a book or manga title</span></button>
+          <button class="action green"><strong>Register Member</strong><span>Create a member profile</span></button>
+          <button class="action amber"><strong>Borrow / Return</strong><span>Process library loans</span></button>
+          <button class="action purple"><strong>Manage Rentals</strong><span>Review member rentals</span></button>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+</body>
+</html>

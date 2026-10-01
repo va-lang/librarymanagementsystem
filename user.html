@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BookHive Library - User UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="user-page">
+  <header class="user-header">
+    <div class="brand user-brand"><div class="brand-mark">📖</div><div><h1>BookHive Library</h1><span>Borrow, Rent, Read, Repeat</span></div></div>
+    <nav class="user-nav"><a class="active" href="#">Home</a><a href="#">Browse</a><a href="#">Manga</a><a href="#">Marketplace</a><a href="#">My Library</a></nav>
+    <div class="user-actions"><div class="avatar">VA</div></div>
+  </header>
+  <main class="user-wrap">
+    <section class="welcome">
+      <div class="hero">
+        <h2>Welcome back, Vanessa!</h2>
+        <p>Discover books, manga, and rentals from other readers.</p>
+        <div class="search-row"><input type="text" placeholder="Search books, manga, authors or ISBN..."><button class="btn btn-primary">Search</button></div>
+      </div>
+      <div class="highlight"><h3>Reading builds a brighter you.</h3><p>Borrow from the library or rent from another reader.</p></div>
+    </section>
+    <div class="stat-grid">
+      <div class="stat green"><span>My Loans</span><strong>2</strong></div>
+      <div class="stat blue"><span>Reservations</span><strong>1</strong></div>
+      <div class="stat amber"><span>My Rentals</span><strong>1</strong></div>
+      <div class="stat red"><span>Wishlist</span><strong>8</strong></div>
+    </div>
+    <section class="panel">
+      <div class="panel-head"><h3>Browse by Genre</h3><a href="#">View All</a></div>
+      <div class="genre-row"><span class="genre">Manga</span><span class="genre">Fantasy</span><span class="genre">Romance</span><span class="genre">Mystery</span><span class="genre">Sci-Fi</span><span class="genre">Non-Fiction</span><span class="genre">Young Adult</span><span class="genre">Comics</span></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h3>Recently Added</h3><a href="#">View All</a></div>
+      <div class="book-grid">
+        <article class="book-card"><div class="cover"><strong>Dune</strong><small>Frank Herbert</small></div><strong>Dune</strong><span>Science Fiction</span></article>
+        <article class="book-card"><div class="cover self"><strong>Atomic Habits</strong><small>James Clear</small></div><strong>Atomic Habits</strong><span>Self Help</span></article>
+        <article class="book-card"><div class="cover manga"><strong>Ocean Pirates Vol. 1</strong><small>Manga</small></div><strong>Ocean Pirates Vol. 1</strong><span>Manga</span></article>
+        <article class="book-card"><div class="cover manga"><strong>Shadow Blades Vol. 1</strong><small>Manga</small></div><strong>Shadow Blades Vol. 1</strong><span>Manga</span></article>
+        <article class="book-card"><div class="cover fantasy"><strong>The Hobbit</strong><small>J.R.R. Tolkien</small></div><strong>The Hobbit</strong><span>Fantasy</span></article>
+        <article class="book-card"><div class="cover"><strong>Project Hail Mary</strong><small>Andy Weir</small></div><strong>Project Hail Mary</strong><span>Science Fiction</span></article>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h3>Rental Marketplace</h3><a href="#">Browse Rentals</a></div>
+      <div class="rental-list">
+        <div class="rental-item"><div class="mini-cover"></div><div><h4>Atomic Habits</h4><p>Owner: Sarah K. • Like New</p></div><div class="price">GHS 36 / week</div><button class="btn btn-outline">Rent</button></div>
+        <div class="rental-item"><div class="mini-cover"></div><div><h4>Ocean Pirates Vol. 1</h4><p>Owner: Daniel M. • Good</p></div><div class="price">GHS 24 / week</div><button class="btn btn-outline">Rent</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>
