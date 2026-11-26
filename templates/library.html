@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% set title = "Catalogue" %}
+{% block content %}
+    <h1>Catalogue</h1>
+    <p class="subheading">{{ total }} titles available to you</p>
+    <form class="filter-bar" method="get">
+        <label class="sr-only" for="search">Search title, author or ISBN</label>
+        <input id="search"
+               name="q"
+               value="{{ q }}"
+               placeholder="Search title, author or ISBN">
+        <label class="sr-only" for="category">Category</label>
+        <select id="category" name="category">
+            <option value="">All categories</option>
+            {% for cat in categories %}
+                <option {% if cat==category %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+        <button class="button button-navy">Search</button>
+        {% if q or category %}
+            <a class="button button-outline" href="/library">Clear</a>
+        {% endif %}
+    </form>
+    <div class="catalogue-grid">
+        {% for book in books %}
+            <a class="catalogue-card"
+               href="{{ url_for('book_detail',book_id=book.id) }}">
+                <div class="book-art tone-{{ loop.index0 % 4 }}">
+                    <span>{{ book.category }}</span>
+                    <strong>{{ book.title }}</strong>
+                    <small>{{ book.author }}</small>
+                </div>
+                <h2>{{ book.title }}</h2>
+                <p>{{ book.author }}</p>
+                <div class="badges">
+                    {% if book.allow_softcopy and book.read_url %}
+                        <span class="pill green">Softcopy</span>
+                    {% endif %}
+                    {% if book.allow_hardcopy %}
+                        <span class="pill amber">{{ book.available_copies }}/{{ book.total_copies }} copies</span>
+                    {% endif %}
+                    {% if book.restricted %}
+                        <span class="pill red">Restricted</span>
+                    {% endif %}
+                </div>
+            </a>
+        {% else %}
+            <p class="empty-state">{{ 'No books match your search.' if total else 'The catalogue is empty. A librarian can add titles from Admin.' }}</p>
+        {% endfor %}
+    </div>
+{% endblock %}
