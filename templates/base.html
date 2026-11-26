@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ title|default("GIMPA Library") }} — GIMPA Library</title>
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&amp;family=Instrument+Sans:wght@400;500;600;700&amp;display=swap"
+              rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body class="content-page">
+        <a class="skip-link" href="#main">Skip to content</a>
+        {% if not auth_page %}
+            <header class="app-header">
+                <div class="container app-nav">
+                    <a class="wordmark"
+                       href="{{ url_for('library') if user else url_for('home') }}">GIMPA Library</a>
+                    <nav aria-label="Main navigation">
+                        {% if user %}
+                            {% for endpoint,label in [('library','Catalogue'),('my_books','My books')] %}
+                                <a href="{{ url_for(endpoint) }}"
+                                   {% if request.endpoint==endpoint %}aria-current="page"{% endif %}>{{ label }}</a>
+                            {% endfor %}
+                            {% if user.role=="admin" %}
+                                <a href="{{ url_for('admin') }}"
+                                   {% if request.endpoint=='admin' %}aria-current="page"{% endif %}>Admin</a>
+                            {% endif %}
+                        {% endif %}
+                        <a href="{{ url_for('about') }}">About</a>
+                    </nav>
+                    {% if user %}
+                        <a class="notification-bell"
+                           href="{{ url_for('notifications') }}"
+                           aria-label="Notifications, {{ unread_count }} unread"
+                           {% if request.endpoint=='notifications' %}aria-current="page"{% endif %}>
+                            <svg width="22" height="22" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="1.8"
+                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+                                <path d="M10 21h4" />
+                            </svg>
+                            {% if unread_count %}
+                                <span class="notification-count" aria-hidden="true">{{ unread_count }}</span>
+                            {% endif %}
+                        </a>
+                        <span>{{ user.name }}</span>
+                        <form action="{{ url_for('logout') }}" method="post">
+                            <input type="hidden" name="csrf" value="{{ csrf }}">
+                            <button class="button button-outline">Sign out</button>
+                        </form>
+                    {% else %}
+                        <a href="{{ url_for('auth') }}">Sign in</a>
+                    {% endif %}
+                </div>
+            </header>
+        {% endif %}
+        {% if user and user.status=="suspended" %}
+            <div class="flash error">Your account is suspended. You may browse but cannot request books. Contact the librarian.</div>
+        {% endif %}
+        {% block layout %}
+            <main id="main" class="container app-content">
+                {% include "_flashes.html" %}
+                {% block content %}{% endblock %}
+            </main>
+        {% endblock %}
+        {% if not auth_page %}
+            <footer class="site-footer">
+                <div class="container footer-grid">
+                    <div>
+                        <a href="/" class="wordmark">GIMPA Library</a>
+                        <p>BookHive— Library Management System.</p>
+                    </div>
+                    <div>
+                        <strong>Created by</strong>
+                        <p>
+                            David Afloe, Vanessa Bedzra, Emmanuel Kwakye,
+                            <br>
+                            Salifu Watara, Nana Agyei
+                        </p>
+                    </div>
+                    <div>
+                        <a href="/about">About this project</a>
+                        <p>© 2026 GIMPA Group 4</p>
+                    </div>
+                </div>
+            </footer>
+        {% endif %}
+    </body>
+</html>

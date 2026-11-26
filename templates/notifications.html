@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% set title = "Notifications" %}
+{% block content %}
+    <div class="notification-heading">
+        <div>
+            <h1>Notifications</h1>
+            <p class="subheading">{{ unread_count }} unread · Updates from your library</p>
+        </div>
+        {% if unread_count %}
+            <form method="post" action="{{ url_for('read_all_notifications') }}">
+                <input type="hidden" name="csrf" value="{{ csrf }}">
+                <button class="button button-outline">Mark all as read</button>
+            </form>
+        {% endif %}
+    </div>
+    <div class="notification-list">
+        {% for item in notifications %}
+            <article class="panel notification-item {% if not item.is_read %}notification-unread{% endif %}">
+                <div>
+                    <p class="notification-message">{{ item.message }}</p>
+                    <p class="notification-meta">
+                        <time datetime="{{ item.created_at.replace(' ', 'T') }}Z">{{ item.created_at }} UTC</time>
+                        · {{ 'Read' if item.is_read else 'Unread' }}
+                    </p>
+                </div>
+                <form method="post" action="{{ url_for('open_notification', notification_id=item.id) }}">
+                    <input type="hidden" name="csrf" value="{{ csrf }}">
+                    <button class="button button-outline">View update</button>
+                </form>
+            </article>
+        {% else %}
+            <div class="panel empty-state">
+                <h2>You're all caught up</h2>
+                <p>New book and request updates will appear here.</p>
+                <a class="button button-navy" href="{{ url_for('library') }}">Browse catalogue</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

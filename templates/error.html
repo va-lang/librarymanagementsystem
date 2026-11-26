@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ error.code }} · {{ error.name }}</h1>
+    <p>{{ error.description }}</p>
+    <a class="button button-navy"
+       href="{{ url_for('library') if user else url_for('home') }}">Back to library</a>
+{% endblock %}

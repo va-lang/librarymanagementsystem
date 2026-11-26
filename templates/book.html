@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% set title = book.title %}
+{% block content %}
+    <a class="back-link" href="/library">Back to catalogue</a>
+    <section class="book-detail panel">
+        <div class="book-art">
+            <span>{{ book.category }}</span>
+            <strong>{{ book.title }}</strong>
+            <small>{{ book.author }}</small>
+        </div>
+        <div>
+            <h1>{{ book.title }}</h1>
+            <p class="subheading">
+                {{ book.author }} · {{ book.category }}
+                {% if book.isbn %}
+                    · ISBN {{ book.isbn }}
+                {% endif %}
+            </p>
+            <p>{{ book.description or 'Explore this title from the GIMPA library collection.' }}</p>
+            <p>Loan period: {{ book.loan_days }} days · {{ book.available_copies }} of {{ book.total_copies }} hardcopies on shelf</p>
+            {% if book.allow_softcopy and book.read_url %}
+                <a class="button button-outline"
+                   href="{{ url_for('read_book', book_id=book.id) }}"
+                   target="_blank"
+                   rel="noopener noreferrer">Read softcopy online</a>
+            {% else %}
+                <p class="subheading">No softcopy available for this title.</p>
+            {% endif %}
+            {% if book.allow_hardcopy %}
+                <form class="stack-form"
+                      method="post"
+                      action="{{ url_for('request_book', book_id=book.id) }}">
+                    <input type="hidden" name="csrf" value="{{ csrf }}">
+                    <label for="note">Note for the librarian (optional)</label>
+                    <textarea id="note" name="note" rows="3" maxlength="1000">
+</textarea>
+                    <button class="button button-navy"
+                            {% if user.status!='active' or not user.can_request %}disabled{% endif %}>{{ 'Request hardcopy' if book.available_copies else 'Join waitlist (no copies on shelf)' }}</button>
+                </form>
+            {% else %}
+                <p>Hardcopy loans are disabled for this title.</p>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

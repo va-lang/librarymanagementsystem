@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% set title = "My books" %}
+{% block content %}
+    <h1>My books</h1>
+    <p class="subheading">Your borrowing report — limit {{ user.max_loans }} active requests and loans.</p>
+    {% include "_stats.html" %}
+    <div class="table-wrap panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Requested</th>
+                    <th>Status</th>
+                    <th>Due</th>
+                    <th>Librarian note</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>
+                            <strong>{{ row.title }}</strong>
+                            <br>
+                            {{ row.author }}
+                        </td>
+                        <td>{{ row.requested_at[:10] }}</td>
+                        <td>
+                            <span class="pill {{ 'red' if row.status=='issued' and row.due_date and row.due_date<today else 'amber' }}">{{ 'Overdue' if row.status=='issued' and row.due_date and row.due_date<today else labels[row.status] }}</span>
+                        </td>
+                        <td>{{ row.due_date or '—' }}</td>
+                        <td>{{ row.admin_note or '—' }}</td>
+                        <td>
+                            {% if row.status in ["pending","approved"] %}
+                                <form method="post"
+                                      action="{{ url_for('cancel_request',request_id=row.id) }}">
+                                    <input type="hidden" name="csrf" value="{{ csrf }}">
+                                    <button class="button button-outline">Cancel</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="empty-state">You haven't requested any books yet. <a href="/library">Browse the catalogue</a>.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
