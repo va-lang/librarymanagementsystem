@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% set title = "Study materials" %}
+{% block content %}
+    <div class="materials-heading">
+        <div>
+            <h1>Study materials</h1>
+            <p class="subheading">A shared archive of slides, lecture notes and teaching resources.</p>
+        </div>
+        {% if user.status == 'active' %}
+            <a class="button button-navy" href="{{ url_for('materials.upload') }}">Upload material</a>
+        {% endif %}
+    </div>
+
+    <form id="materials-filters" class="filter-bar" method="get"
+          action="{{ url_for('materials.index') }}">
+        <label class="sr-only" for="material-search">Search materials</label>
+        <input id="material-search" name="q" value="{{ q }}"
+               placeholder="Search title, course or contributor">
+        <label class="sr-only" for="material-type">Material type</label>
+        <select id="material-type" name="type">
+            <option value="">All material types</option>
+            {% for item in material_types %}
+                <option {% if kind == item %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+        </select>
+        <label class="sr-only" for="material-owner">Uploaded by</label>
+        <select id="material-owner" name="mine">
+            <option value="0" {% if not mine %}selected{% endif %}>Everyone's uploads</option>
+            <option value="1" {% if mine %}selected{% endif %}>My uploads</option>
+        </select>
+        <button class="button button-navy">Search</button>
+        {% if q or kind or mine %}
+            <a class="button button-outline" href="{{ url_for('materials.index') }}">Clear</a>
+        {% endif %}
+    </form>
+
+    <p class="subheading">{{ materials|length }} {{ 'material' if materials|length == 1 else 'materials' }}</p>
+    <div class="materials-grid">
+        {% for item in materials %}
+            <article class="panel material-card">
+                <div class="material-card-top">
+                    <span class="material-format">{{ item.original_name.rsplit('.', 1)[-1]|upper }}</span>
+                    <span class="pill amber">{{ item.material_type }}</span>
+                </div>
+                <h2>{{ item.title }}</h2>
+                <p class="material-course">{{ item.course }}</p>
+                {% if item.description %}
+                    <p class="material-description">{{ item.description }}</p>
+                {% endif %}
+                <p class="material-meta">
+                    Shared by {{ item.uploader }}
+                    <br>
+                    <time datetime="{{ item.created_at.replace(' ', 'T') }}Z">{{ item.created_at[:10] }}</time>
+                    · {{ item.file_size|filesizeformat }}
+                </p>
+                <a class="button button-outline" href="{{ url_for('materials.download', material_id=item.id) }}">
+                    Download {{ item.original_name.rsplit('.', 1)[-1]|upper }}
+                </a>
+                {% if user.status == 'active' and (user.id == item.user_id or user.role == 'admin') %}
+                    <details class="material-delete">
+                        <summary>Remove material</summary>
+                        <p>Remove “{{ item.title }}” from the shared archive? This deletes the uploaded file.</p>
+                        <form method="post" action="{{ url_for('materials.delete', material_id=item.id) }}">
+                            <input type="hidden" name="csrf" value="{{ csrf }}">
+                            <button class="button button-outline">Confirm removal</button>
+                        </form>
+                    </details>
+                {% endif %}
+            </article>
+        {% else %}
+            <div class="panel empty-state">
+                <h2>{{ 'No matching materials' if q or kind or mine else 'Start your shared study archive' }}</h2>
+                <p>{{ 'Try another search or clear the filters.' if q or kind or mine else 'Upload slides, lecture notes or teaching materials to help others learn.' }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    <script src="{{ url_for('static', filename='materials.js') }}" defer></script>
+{% endblock %}

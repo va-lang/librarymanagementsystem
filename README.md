@@ -27,7 +27,7 @@ py -m venv .venv
 
 Open **http://localhost:8000/**. Stop with Ctrl+C. On later runs, just run `python app.py` in the activated environment (or the Windows executable command above). Use the Flask server, not `python -m http.server`: the pages now depend on Python routes and templates.
 
-`seed-demo` is optional and adds five sample titles only to an empty catalogue. `create-admin` prompts for the librarian's name, email and password; passwords are entered privately. Student accounts are created using Sign up. No default passwords are included.
+`seed-demo` is optional and adds five sample titles only to an empty catalogue. `create-admin` prompts for the librarian's name, email and password; passwords are entered privately. Student accounts are created by a librarian under **Admin → Users → Add user**. The librarian selects the required student/staff ID (1 = student, 0 = admin), sets a password and provides the credentials directly to the user. The signed-in administrator always appears first in the Users list. Public sign-up is disabled. No default passwords are included.
 
 ## Seeing your changes
 
@@ -37,8 +37,10 @@ Edit pages in `templates/` and styles in `static/style.css`. After changing the 
 
 ## Workflow
 
-- Public welcome page, sign-up/sign-in and project information.
+- Public welcome page, sign-in and project information; user accounts are created by administrators.
 - Catalogue search by title, author or ISBN, with category filtering.
+- Study materials (`/materials/`): active students and admins can upload slides, lecture notes and teaching resources to a shared archive. Add a title, course/subject, type and optional description. Supported formats are PDF, PPTX, DOCX and UTF-8 TXT, up to 20 MB per file.
+- Signed-in users can search and download materials or filter to their own uploads. Students can remove their own files; active admins can remove any material. Files are downloaded as attachments, and downloads require authentication.
 - Book details, external softcopy links, hardcopy requests and a pending waitlist when copies are unavailable.
 - My books: request history, due dates, overdue status and cancellation of pending/approved requests.
 - Notifications: the header bell shows unread updates. Students receive announcements for newly published books and changes to their requests; active librarians receive new-request and cancellation updates. Open an update to mark it read, or mark all as read. Notifications persist in SQLite and appear on the next page load or refresh; they are in-app updates, not email or push alerts.
@@ -49,11 +51,14 @@ Edit pages in `templates/` and styles in `static/style.css`. After changing the 
 ## Project layout
 
 - `app.py` — Python routes, authentication and library rules
+- `materials.py` — study archive routes, upload validation and download permissions
 - `schema.sql` — SQLite schema
 - `templates/` — server-rendered pages
 - `static/style.css` — shared responsive navy/gold styling
 - `tests/test_app.py` — isolated workflow tests
+- `tests/test_materials.py` — upload, download, filtering and permission tests
 - `instance/` — local database and signing key; ignored by Git
+- `instance/materials/` — uploaded study files; ignored by Git. Back up this folder together with the SQLite database to preserve the shared archive.
 
 Each computer gets its own SQLite database. Share the source folder without `.venv/` or `instance/`, then run setup on the other computer. Google Fonts are optional; local font fallbacks and CSS-rendered covers work offline. Real catalogue entries and softcopy links can be entered by a librarian.
 
@@ -63,4 +68,4 @@ Each computer gets its own SQLite database. Share the source folder without `.ve
 python -m unittest discover -s tests -v
 ```
 
-This is a local coursework application. Email verification, password recovery, uploaded ebook storage and public production hosting are not implemented. Online reading opens the external link entered by a librarian. The development server binds to localhost.
+This is a local coursework application. Email verification, password recovery and public production hosting are not implemented. Catalogue softcopies open the external link entered by a librarian; study materials are uploaded locally and downloaded from the archive. The development server binds to localhost.

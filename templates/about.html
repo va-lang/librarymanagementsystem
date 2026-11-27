@@ -15,7 +15,8 @@
     <body>
         <div class="content-page">
             <main class="container about-content">
-                <a class="back-link" href="/">Back to library</a>
+                <a class="back-link"
+                   href="{{ url_for('library') if user else url_for('home') }}">Back to library</a>
                 <p class="eyebrow">GIMPA · Group 4 . BookHive</p>
                 <h1>About this project</h1>
                 <p class="about-intro">The GIMPA Library Management System is the Group 4 semester project. It lets students browse the catalogue, read softcopies online, request hardcopies and track their loans, while librarians manage books, requests, users and access rights.</p>
@@ -37,7 +38,7 @@
             <footer class="site-footer">
                 <div class="container footer-grid">
                     <div>
-                        <a class="wordmark" href="/">GIMPA Library</a>
+                        <a class="wordmark" href="{{ url_for('library') if user else url_for('home') }}">GIMPA Library</a>
                         <p>Group 4 Semester Project — Library Management System.</p>
                     </div>
                     <div>

@@ -10,6 +10,7 @@ from urllib.parse import urlsplit
 import click
 from flask import Flask, abort, flash, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
+from materials import create_materials_blueprint
 
 LABELS = {'pending': 'Pending review', 'approved': 'Ready for pickup', 'issued': 'Issued',
           'returned': 'Returned', 'rejected': 'Rejected', 'cancelled': 'Cancelled'}
@@ -19,7 +20,8 @@ def create_app(config=None):
     app = Flask(__name__)
     app.config.from_mapping(DATABASE=str(Path(app.instance_path) / 'library.sqlite'),
                             SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE='Lax',
-                            MAX_CONTENT_LENGTH=1024 * 1024)
+                            MAX_CONTENT_LENGTH=21 * 1024 * 1024,
+                            UPLOAD_FOLDER=str(Path(app.instance_path) / 'materials'))
     if config:
         app.config.update(config)
 
@@ -58,6 +60,11 @@ def create_app(config=None):
 
     with app.app_context():
         db().executescript(Path(app.root_path, 'schema.sql').read_text())
+        # Existing accounts retain their permissions when adopting role IDs.
+        with db():
+            db().execute(
+                "UPDATE users SET student_id=CASE WHEN role='admin' THEN '0' ELSE '1' END"
+            )
 
     @app.before_request
     def load_user_and_check_csrf():
@@ -108,6 +115,8 @@ def create_app(config=None):
             return view(*args, **kwargs)
         return wrapper
 
+    app.register_blueprint(create_materials_blueprint(db, login_required))
+
     @app.get('/')
     def home():
         return render_template('index.html')
@@ -118,31 +127,17 @@ def create_app(config=None):
 
     @app.route('/auth', methods=['GET', 'POST'])
     def auth():
-        signup = request.args.get('mode') == 'signup'
         if request.method == 'POST':
             email = request.form.get('email', '').strip().lower()
             password = request.form.get('password', '')
             person = db().execute('SELECT * FROM users WHERE email=?', (email,)).fetchone()
-            if signup:
-                name = request.form.get('name', '').strip()
-                if not name or '@' not in email or len(password) < 8:
-                    flash('Enter your name, a valid email and a password of at least 8 characters.', 'error')
-                elif person:
-                    flash('An account already exists for this email. Please sign in.', 'error')
-                else:
-                    with db():
-                        row = db().execute('INSERT INTO users(name,email,password_hash,student_id) VALUES(?,?,?,?)',
-                                           (name, email, generate_password_hash(password), request.form.get('student_id', '').strip()))
-                    session.clear()
-                    session['user_id'] = row.lastrowid
-                    return redirect(url_for('library'))
-            elif person and check_password_hash(person['password_hash'], password):
+            if person and check_password_hash(person['password_hash'], password):
                 session.clear()
                 session['user_id'] = person['id']
                 return redirect(url_for('library'))
             else:
                 flash('Email or password is incorrect.', 'error')
-        return render_template('auth.html', signup=signup)
+        return render_template('auth.html')
 
     @app.post('/logout')
     def logout():
@@ -270,7 +265,10 @@ def create_app(config=None):
     def admin():
         tab = request.args.get('tab', 'reports')
         books = db().execute('SELECT * FROM books ORDER BY title').fetchall()
-        users = db().execute('SELECT * FROM users ORDER BY name').fetchall()
+        users = db().execute(
+            'SELECT * FROM users ORDER BY (id=?) DESC, name COLLATE NOCASE, id',
+            (g.user['id'],),
+        ).fetchall()
         rows = all_requests()
         stats = [('Titles', len(books)), ('Copies on shelf', sum(b['available_copies'] for b in books)),
                  ('Users', len(users)), ('Pending requests', sum(r['status'] == 'pending' for r in rows)),
@@ -371,12 +369,47 @@ def create_app(config=None):
             flash('This book has borrowing history. Mark it restricted instead of deleting it.', 'error')
         return redirect(url_for('admin', tab='books'))
 
+    @app.route('/admin/users/new', methods=['GET', 'POST'])
+    @admin_required
+    def add_user():
+        if request.method == 'POST':
+            name = request.form.get('name', '').strip()
+            email = request.form.get('email', '').strip().lower()
+            password = request.form.get('password', '')
+            student_id = request.form.get('student_id', '').strip()
+            email_parts = email.split('@')
+            valid_email = (
+                len(email_parts) == 2
+                and all(email_parts)
+                and not any(character.isspace() for character in email)
+                and '.' in email_parts[1]
+            )
+            if not name or not valid_email or len(password) < 8:
+                flash('Enter a name, valid email and password of at least 8 characters.', 'error')
+            elif student_id not in ('0', '1'):
+                flash('Select a student/staff ID: 1 for Student or 0 for Admin.', 'error')
+            else:
+                role = 'admin' if student_id == '0' else 'student'
+                try:
+                    with db():
+                        db().execute(
+                            'INSERT INTO users(name,email,password_hash,student_id,role) VALUES(?,?,?,?,?)',
+                            (name, email, generate_password_hash(password), student_id, role),
+                        )
+                    flash(f'Account created for {name}. They can now sign in.', 'success')
+                    return redirect(url_for('admin', tab='users'))
+                except sqlite3.IntegrityError:
+                    flash('An account with this email already exists.', 'error')
+        return render_template('user_form.html')
+
     @app.post('/admin/users/<int:user_id>')
     @admin_required
     def update_user(user_id):
         if user_id == g.user['id']:
             abort(400, 'You cannot change your own administrator permissions here.')
-        role, status = request.form.get('role'), request.form.get('status')
+        student_id = request.form.get('student_id', '')
+        role = {'0': 'admin', '1': 'student'}.get(student_id)
+        status = request.form.get('status')
         try:
             limit = int(request.form.get('max_loans', '3'))
             if limit < 0 or role not in ('student','admin') or status not in ('active','suspended'):
@@ -384,7 +417,7 @@ def create_app(config=None):
         except ValueError:
             abort(400, 'Invalid member settings.')
         with db():
-            db().execute('UPDATE users SET role=?,status=?,can_request=?,max_loans=? WHERE id=?', (role,status,int('can_request' in request.form),limit,user_id))
+            db().execute('UPDATE users SET role=?,student_id=?,status=?,can_request=?,max_loans=? WHERE id=?', (role,student_id,status,int('can_request' in request.form),limit,user_id))
         flash('Member settings saved.', 'success')
         return redirect(url_for('admin', tab='users'))
 
@@ -393,12 +426,12 @@ def create_app(config=None):
     @click.option('--name', prompt=True)
     @click.password_option(confirmation_prompt=True)
     def create_admin(email, name, password):
-        """Create a librarian account. Public signup always creates students."""
+        """Create a librarian account with staff ID 0."""
         if len(password) < 8:
             raise click.ClickException('Use a password of at least 8 characters.')
         try:
             with db():
-                db().execute("INSERT INTO users(name,email,password_hash,role) VALUES(?,?,?,'admin')", (name,email.strip().lower(),generate_password_hash(password)))
+                db().execute("INSERT INTO users(name,email,password_hash,role,student_id) VALUES(?,?,?,'admin','0')", (name,email.strip().lower(),generate_password_hash(password)))
         except sqlite3.IntegrityError:
             raise click.ClickException('An account with that email already exists.') from None
         click.echo('Librarian account created.')
@@ -421,6 +454,7 @@ def create_app(config=None):
     @app.errorhandler(400)
     @app.errorhandler(403)
     @app.errorhandler(404)
+    @app.errorhandler(413)
     def error_page(error):
         return render_template('error.html', error=error), error.code
 
