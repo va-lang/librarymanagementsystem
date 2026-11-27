@@ -135,7 +135,8 @@
             </table>
         </div>
     {% elif tab=="users" %}
-        <div class="member-list">
+        <a class="button button-navy" href="{{ url_for('add_user') }}">Add user</a>
+        <div class="member-list spaced">
             {% for member in users %}
                 <section class="panel">
                     <h2>{{ member.name }}</h2>
@@ -151,10 +152,10 @@
                               action="{{ url_for('update_user',user_id=member.id) }}">
                             <input type="hidden" name="csrf" value="{{ csrf }}">
                             <label>
-                                Role<select name="role">
-                                {% for role in ['student','admin'] %}
-                                    <option {% if member.role==role %}selected{% endif %}>{{ role }}</option>
-                                {% endfor %}
+                                Student / staff ID
+                                <select name="student_id" required>
+                                    <option value="1" {% if member.role == 'student' %}selected{% endif %}>1 — Student</option>
+                                    <option value="0" {% if member.role == 'admin' %}selected{% endif %}>0 — Admin</option>
                                 </select>
                             </label>
                             <label>

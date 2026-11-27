@@ -32,3 +32,16 @@ CREATE TABLE IF NOT EXISTS notifications (
 
 CREATE INDEX IF NOT EXISTS notifications_user_unread
 ON notifications(user_id, is_read);
+
+CREATE TABLE IF NOT EXISTS materials (
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    title TEXT NOT NULL,
+    course TEXT NOT NULL,
+    material_type TEXT NOT NULL CHECK(material_type IN ('Slides', 'Lecture notes', 'Teaching material', 'Other')),
+    description TEXT NOT NULL DEFAULT '',
+    original_name TEXT NOT NULL,
+    stored_name TEXT NOT NULL UNIQUE,
+    file_size INTEGER NOT NULL CHECK(file_size > 0),
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);

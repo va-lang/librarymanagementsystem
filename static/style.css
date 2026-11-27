@@ -774,6 +774,7 @@ th,
 .filter-bar input,
 .filter-bar select,
 .stack-form input,
+.stack-form select,
 .stack-form textarea,
 .member-form input,
 .member-form select,
@@ -1145,4 +1146,76 @@ select {
     margin: 0;
     color: var(--muted);
     font-size: 0.875rem;
+}
+
+/* Shared study archive. */
+.materials-heading,
+.material-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.materials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.material-card {
+    margin-bottom: 0;
+    overflow-wrap: anywhere;
+}
+
+.material-card h2 {
+    font-size: 1.4rem;
+    margin: 20px 0 8px;
+}
+
+.material-format {
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--navy);
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+}
+
+.material-course {
+    margin-top: 0;
+    font-weight: 600;
+}
+
+.material-description {
+    white-space: pre-wrap;
+}
+
+.material-meta,
+.material-delete {
+    color: var(--muted);
+    font-size: 0.875rem;
+}
+
+.material-delete {
+    margin-top: 16px;
+}
+
+input[type="file"] {
+    max-width: 100%;
+    min-width: 0;
+}
+
+@media (max-width: 1000px) {
+    .materials-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .materials-grid {
+        grid-template-columns: 1fr;
+    }
 }

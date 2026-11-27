@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% set title = "Upload study material" %}
+{% block content %}
+    <a class="back-link" href="{{ url_for('materials.index') }}">Back to study materials</a>
+    <h1>Upload study material</h1>
+    <p class="subheading">Share slides, notes and teaching resources with everyone signed in to the archive.</p>
+    <form class="stack-form panel book-form" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <label for="material-title">Title</label>
+        <input id="material-title" name="title" required maxlength="160"
+               value="{{ request.form.get('title', '') }}"
+               placeholder="Introduction to networking — Week 1">
+
+        <label for="material-course">Course or subject</label>
+        <input id="material-course" name="course" required maxlength="120"
+               value="{{ request.form.get('course', '') }}"
+               placeholder="ICT 101 — Computer Networks">
+
+        <label for="material-kind">Material type</label>
+        <select id="material-kind" name="material_type" required>
+            <option value="">Select a type</option>
+            {% for kind in material_types %}
+                <option {% if request.form.get('material_type') == kind %}selected{% endif %}>{{ kind }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="material-description">Description (optional)</label>
+        <textarea id="material-description" name="description" rows="4" maxlength="2000"
+                  placeholder="What does this resource cover?">{{ request.form.get('description', '') }}</textarea>
+
+        <label for="material-file">File</label>
+        <input id="material-file" name="file" type="file" required
+               accept=".pdf,.pptx,.docx,.txt" aria-describedby="file-help">
+        <p id="file-help" class="subheading">PDF, PowerPoint (.pptx), Word (.docx), or plain text (.txt). Maximum 20 MB.</p>
+        <button class="button button-navy">Upload material</button>
+    </form>
+{% endblock %}

@@ -63,16 +63,66 @@ class LibraryTest(unittest.TestCase):
             with self.client.get(path) as response:
                 self.assertEqual(response.status_code, 200, path)
 
-    def test_signup_signin_and_csrf(self):
+    def test_admin_creates_user_and_user_can_sign_in(self):
+        data = dict(name='New Member', email='new@example.com',
+                    password='password123', student_id='1', role='admin')
         self.assertEqual(self.client.post('/auth', data={}).status_code, 400)
-        response = self.post('/auth?mode=signup', name='New Member', email='new@example.com', password='password123', role='admin')
-        self.assertIn(b'Catalogue', response.data)
+        self.post('/auth?mode=signup', **data)
+        self.assertEqual(self.scalar('SELECT count(*) FROM users'), 3)
+        self.assertNotIn(b'Sign up', self.client.get('/auth?mode=signup').data)
+        self.assertNotIn(b'mode=signup', self.client.get('/').data)
+        self.assertEqual(self.client.get('/admin/users/new').status_code, 302)
+        self.post('/admin/users/new', **data)
+        self.assertEqual(self.scalar('SELECT count(*) FROM users'), 3)
+
+        self.login(1)
+        self.assertEqual(self.client.get('/admin/users/new').status_code, 403)
+        self.assertEqual(self.post('/admin/users/new', **data).status_code, 403)
+        self.login(2)
+        self.assertEqual(self.client.get('/admin/users/new').status_code, 200)
+        self.assertEqual(self.client.post('/admin/users/new', data=data).status_code, 400)
+        response = self.post('/admin/users/new', **data)
+        self.assertIn(b'Account created', response.data)
         self.assertEqual(self.scalar("SELECT role FROM users WHERE email='new@example.com'"), 'student')
         self.assertNotEqual(self.scalar("SELECT password_hash FROM users WHERE email='new@example.com'"), 'password123')
+        with self.client.session_transaction() as session:
+            self.assertEqual(session['user_id'], 2)
+        self.assertIn(b'already exists', self.post('/admin/users/new', **data).data)
+        self.assertEqual(self.scalar('SELECT count(*) FROM users'), 4)
         self.post('/logout')
         self.assertEqual(self.client.get('/my-books').status_code, 302)
         self.assertIn(b'incorrect', self.post('/auth', email='new@example.com', password='wrong').data)
         self.assertIn(b'Catalogue', self.post('/auth', email='new@example.com', password='password123').data)
+
+    def test_add_user_validation_and_suspended_admin(self):
+        self.login(2)
+        for data in [
+            dict(name='', email='valid@example.com', password='password123'),
+            dict(name='Member', email='invalid', password='password123'),
+            dict(name='Member', email='valid@example.com', password='short'),
+        ]:
+            self.post('/admin/users/new', **data)
+        self.assertEqual(self.scalar('SELECT count(*) FROM users'), 3)
+        with self.connection() as db:
+            db.execute("UPDATE users SET status='suspended' WHERE id=2")
+        self.assertEqual(self.post('/admin/users/new', name='Member',
+                                  email='valid@example.com', password='password123').status_code, 403)
+
+    def test_required_role_id_and_admin_first(self):
+        self.login(2)
+        data = dict(name='Aaron New User', email='aaron@example.com', password='password123')
+        for value in ['', '2', 'ICT-123']:
+            self.post('/admin/users/new', **data, student_id=value)
+        self.assertEqual(self.scalar('SELECT count(*) FROM users'), 3)
+        self.post('/admin/users/new', **data, student_id='0')
+        self.assertEqual(self.scalar("SELECT role FROM users WHERE email='aaron@example.com'"), 'admin')
+        self.assertEqual(self.scalar("SELECT student_id FROM users WHERE email='aaron@example.com'"), '0')
+        html = self.client.get('/admin?tab=users').get_data(as_text=True)
+        self.assertLess(html.index('<h2>Librarian</h2>'), html.index('<h2>Aaron New User</h2>'))
+        self.post('/admin/users/4', student_id='1', status='active', max_loans='3')
+        self.assertEqual(self.scalar('SELECT role FROM users WHERE id=4'), 'student')
+        self.assertEqual(self.scalar('SELECT student_id FROM users WHERE id=4'), '1')
+        self.assertEqual(self.post('/admin/users/4', student_id='2', status='active').status_code, 400)
 
     def test_full_loan_lifecycle_and_duplicate_request(self):
         self.login(1)
@@ -137,8 +187,8 @@ class LibraryTest(unittest.TestCase):
         self.assertEqual(self.scalar('SELECT total_copies FROM books WHERE id=1'), 1)
         self.post('/admin/books/1/delete')
         self.assertEqual(self.scalar('SELECT count(*) FROM books WHERE id=1'), 1)
-        self.assertEqual(self.post('/admin/users/2', role='student',status='active',max_loans='3').status_code, 400)
-        self.post('/admin/users/1', role='student',status='suspended',max_loans='2')
+        self.assertEqual(self.post('/admin/users/2', student_id='1',status='active',max_loans='3').status_code, 400)
+        self.post('/admin/users/1', student_id='1',status='suspended',max_loans='2')
         self.assertEqual(self.scalar('SELECT status FROM users WHERE id=1'), 'suspended')
 
     def test_admin_added_book_appears_in_student_catalogue(self):
